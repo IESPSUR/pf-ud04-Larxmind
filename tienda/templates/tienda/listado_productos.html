@@ -3,18 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <title>Listado de Productos</title>
+
+    {# Cargamos la librería #}
+    {% load bootstrap4 %}
+
+    {# CSS Bootstrap #}
+    {% bootstrap_css %}
+
+      {# JS y jQuery Bootstrap #}
+      {% bootstrap_javascript jquery='full' %}
 </head>
 <body>
+    <h1 class="display-1 text-center">LISTADO DE PRODUCTOS</h1>
+<div align="left" class="btn_crear mb-3">
+  <a href="crear" type="button" class="btn btn-primary">Crear</a>
+</div>
+
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th width="35%">Nombre</th>
+      <th>Modelo</th>
+      <th>Fabricante</th>
+      <th>Stock</th>
+      <th>Stock</th>
+      <th>Detalles</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
 
     {% for producto in productos %}
-        <ul>
-            <li>{{ producto.nombre }}</li>
-            <li>{{ producto.modelo }}</li>
-            <li>{{ producto.marca }}</li>
-            <li>{{ producto.unidades }}</li>
-            <li>{{ producto.precio }}</li>
-            <li>{{ producto.detalles }}</li>
-        </ul>
+        <tr>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.modelo }}</td>
+            <td>{{ producto.marca }}</td>
+            <td>{{ producto.unidades }}</td>
+            <td>{{ producto.precio }}</td>
+            <td>{{ producto.detalles }}</td>
+            <td>
+                <!-- Usaremos un formulario que realizará la tarea de eliminar un registro desde la misma tabla HTML -->
+                <form method="POST" action="eliminar/{{producto.id}}">
+                    {% csrf_token %}
+                    <div class="btn-group">
+                        <!-- Creamos 3 botones que son ver, Editar y Eliminar, nos sirven para gestionar los productos -->
+                        <a href="detalle/{{producto.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
+                        <a href="editar/{{producto.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
+                        <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                            Eliminar
+                        </button>
+                    </div>
+                </form>
+            </td>
+        </tr>
     {% endfor %}
+  </tbody>
+</table>
+
+      {# JS y jQuery Bootstrap #}
+      {% bootstrap_javascript jquery='full' %}
 </body>
 </html>
