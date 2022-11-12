@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    {# Cargamos librerías bootstrap #}
+    {% load bootstrap4 %}
+
+    {# CSS Bootstrap #}
+    {% bootstrap_css %}
+
 </head>
 <body>
 
     {% load widget_tweaks %}
+     <div class="container text-center mt-5">
 
         <form method="post" enctype="multipart/form-data">
            <!--# Pasamos el 'csrf_token' de seguridad para poder crear un nuevo registro -->
@@ -46,6 +54,8 @@
             <button type="submit" class="btn btn-primary">Aceptar</button>
             <a href="./" type="submit" class="btn btn-primary">Cancelar</a>
         </form>
-
+     </div>
+      {# JS y jQuery Bootstrap #}
+      {% bootstrap_javascript jquery='full' %}
 </body>
 </html>

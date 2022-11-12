@@ -9,11 +9,9 @@
 
     {# CSS Bootstrap #}
     {% bootstrap_css %}
-
-      {# JS y jQuery Bootstrap #}
-      {% bootstrap_javascript jquery='full' %}
 </head>
 <body>
+ <div class="container col-10 text-center mt-5">
     <h1 class="display-1 text-center">LISTADO DE PRODUCTOS</h1>
 <div align="left" class="btn_crear mb-3">
   <a href="crear" type="button" class="btn btn-primary">Crear</a>
@@ -26,7 +24,7 @@
       <th>Modelo</th>
       <th>Fabricante</th>
       <th>Stock</th>
-      <th>Stock</th>
+      <th>Precio</th>
       <th>Detalles</th>
       <th>Acciones</th>
     </tr>
@@ -59,7 +57,7 @@
     {% endfor %}
   </tbody>
 </table>
-
+ </div>
       {# JS y jQuery Bootstrap #}
       {% bootstrap_javascript jquery='full' %}
 </body>

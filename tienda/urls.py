@@ -8,8 +8,9 @@ urlpatterns = [
     path('tienda/', views.welcome, name='welcome'),
     path('tienda/listado_productos', views.listado_productos, name='listado_productos'),
 
-    # La ruta 'leer' en donde listamos todos los registros o postres de la Base de Datos
-    path('tienda/', Listado.as_view(template_name="tienda/listado_productos.html"), name='listado_productos'),
+    # La ruta 'leer' en donde listamos todos los registros
+    path('tienda/listado_productos', Listado.as_view(template_name="tienda/listado_productos.html"),
+         name='listado_productos'),
 
     # La ruta 'detalles' en donde mostraremos una página con los detalles de un postre o registro
     path('tienda/detalle/<int:pk>', ProductoDetalle.as_view(template_name="tienda/detalles.html"), name='detalles'),

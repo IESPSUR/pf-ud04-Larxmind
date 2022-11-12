@@ -17,13 +17,16 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django import forms
 
 # Create your views here.
+
+
 def welcome(request):
-    return render(request,'tienda/index.html', {})
+    return render(request, 'tienda/index.html', {})
 
 
 def listado_productos(request):
     productos = Producto.objects.all()
-    return render(request,'tienda/listado_productos.html', {'productos':productos})
+    return render(request, 'tienda/listado_productos.html', {'productos': productos})
+
 
 class Listado(ListView):
     model = Producto # Llamamos a la clase 'Producto' que se encuentra en nuestro archivo 'models.py'
@@ -63,7 +66,7 @@ class ProductoEliminar(SuccessMessageMixin, DeleteView):
     # Redireccionamos a la página principal luego de eliminar un registro o postre
     def get_success_url(self):
         success_message = 'Producto Eliminado Correctamente !'  # Mostramos este Mensaje luego de Editar un Producto
-        messages.success(self.request, (success_message))
+        messages.success(self.request, success_message)
         return reverse('listado_productos')  # Redireccionamos a la vista principal 'listado_productos'#
 
 

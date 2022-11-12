@@ -3,8 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    {% load bootstrap4 %}
+
+    {# CSS Bootstrap #}
+    {% bootstrap_css %}
+
+    {% load static %}
 </head>
 <body>
+ <div class="container text-center mt-5">
+    <h4>Detalles</h4>
 
-</body>
+    <p><span class="txt_negrita">Nombre:</span> <br> {{producto.nombre}}</p>
+    <p><span class="txt_negrita">Modelo:</span> <br> {{producto.modelo}}</p>
+    <p><span class="txt_negrita">Marca:</span> <br> {{object.marca}}</p>
+    <p><span class="txt_negrita">Unidades:</span> <br> {{object.unidades}}</p>
+    <p><span class="txt_negrita">Precio:</span> <br> {{object.precio}}</p>
+    <p><span class="txt_negrita">Detalles:</span> <br> {{object.detalles}}</p>
+
+    <!-- Botón para volver a la vista principal (Home) -->
+    <a href="{% url 'listado_productos' %}" type="submit" class="btn btn-primary">Volver</a>
+
+ </div>
+      {# JS y jQuery Bootstrap #}
+      {% bootstrap_javascript jquery='full' %}
+    </body>
 </html>
