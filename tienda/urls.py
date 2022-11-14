@@ -24,4 +24,11 @@ urlpatterns = [
 
     # La ruta 'eliminar' que usaremos para eliminar un postre o registro de la Base de Datos
     path('tienda/eliminar/<int:pk>', ProductoEliminar.as_view(), name='eliminar'),
+
+    # Ruta para acceder al listado de compras
+    path('tienda/listado_compra', views.listado_compra, name='listado_compra'),
+
+    # Ruta para mostrar el producto de la compra
+    path('tienda/comprar/<int:pk>', views.compra_producto, name='compra_producto'),
+
 ]

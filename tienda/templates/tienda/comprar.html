@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table>
+        <tr>
+             <td>{{ producto.nombre }}</td>
+             <td>{{ producto.modelo }}</td>
+             <td>{{ producto.marca }}</td>
+        </tr>
+        <tr>
+              <td>Precio: {{ producto.precio }}</td>
+        </tr>
+        <tr>
+            <td>Unidades disponibles: {{ producto.unidades }}</td>
+        </tr>
+    </table>
+
+    <form METHOD="post">
+        <label>Cantidad</label>
+        <input name="cantidad_requerida" type="number" min="1" max="{{ producto.unidades }}">
+        <input type="submit" value="Comprar">
+    </form>
+
+</body>
+</html>

@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Listado de Productos</title>
+    <title>Listado compras</title>
 
-    {# Cargamos la librería #}
     {% load bootstrap4 %}
-
     {# CSS Bootstrap #}
     {% bootstrap_css %}
+
 </head>
 <body>
  <div class="container col-10 text-center mt-5">
@@ -51,15 +50,10 @@
             <td>{{ producto.detalles }}</td>
             <td>
                 <!-- Usaremos un formulario que realizará la tarea de eliminar un registro desde la misma tabla HTML -->
-                <form method="POST" action="eliminar/{{producto.id}}">
-                    {% csrf_token %}
+
                     <div class="btn-group">
                         <!-- Creamos 3 botones que son ver, Editar y Eliminar, nos sirven para gestionar los productos -->
-                        <a href="detalle/{{producto.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
-                        <a href="editar/{{producto.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
-                        <button class="btn btn-danger" onclick="return eliminar();" type="submit">
-                            Eliminar
-                        </button>
+                        <a href="comprar/{{producto.id}}" title="Comprar" type="button" class="btn btn-info">Comprar </a>
                     </div>
                 </form>
             </td>

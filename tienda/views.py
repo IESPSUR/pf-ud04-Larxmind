@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Producto
 
 from django.views.generic import ListView, DetailView
@@ -29,13 +29,13 @@ def listado_productos(request):
 
 
 class Listado(ListView):
-    model = Producto # Llamamos a la clase 'Producto' que se encuentra en nuestro archivo 'models.py'
+    model = Producto  # Llamamos a la clase 'Producto' que se encuentra en nuestro archivo 'models.py'
 
 
 class ProductoCrear(SuccessMessageMixin, CreateView):
     model = Producto  # Llamamos a la clase 'Producto' que se encuentra en nuestro archivo 'models.py'
     form = Producto  # Definimos nuestro formulario con el nombre de la clase o modelo 'Producto'
-    fields = "__all__"  # Le decimos a Django que muestre todos los campos de la tabla 'producto' de nuestra Base de Datos
+    fields = "__all__"  # Muestra todos los campos de la tabla 'producto' de nuestra Base de Datos
     success_message = 'Producto Creado Correctamente !'  # Mostramos este Mensaje luego de Crear un Postre
 
     # Redireccionamos a la página principal luego de crear un registro o postre
@@ -44,13 +44,13 @@ class ProductoCrear(SuccessMessageMixin, CreateView):
 
 
 class ProductoDetalle(DetailView):
-    model = Producto # Llamamos a la clase 'Producto' que se encuentra en nuestro archivo 'models.py'
+    model = Producto  # Llamamos a la clase 'Producto' que se encuentra en nuestro archivo 'models.py'
 
 
 class ProductoActualizar(SuccessMessageMixin, UpdateView):
     model = Producto  # Llamamos a la clase 'Producto' que se encuentra en nuestro archivo 'models.py'
     form = Producto  # Definimos nuestro formulario con el nombre de la clase o modelo 'Producto'
-    fields = "__all__"  # Le decimos a Django que muestre todos los campos de la tabla 'producto' de nuestra Base de Datos
+    fields = "__all__"  # muestra todos los campos de la tabla 'producto' de nuestra Base de Datos
     success_message = 'Producto Actualizado Correctamente !'  # Mostramos este Mensaje luego de Editar un Postre
 
     # Redireccionamos a la página principal luego de actualizar un registro o postre
@@ -68,5 +68,16 @@ class ProductoEliminar(SuccessMessageMixin, DeleteView):
         success_message = 'Producto Eliminado Correctamente !'  # Mostramos este Mensaje luego de Editar un Producto
         messages.success(self.request, success_message)
         return reverse('listado_productos')  # Redireccionamos a la vista principal 'listado_productos'#
+
+
+# COMPRA
+def listado_compra(request):
+    productos = Producto.objects.all()
+    return render(request, 'tienda/listado_compra.html', {'productos': productos})
+
+
+def compra_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    return render(request, 'tienda/comprar.html', {'producto': producto})
 
 

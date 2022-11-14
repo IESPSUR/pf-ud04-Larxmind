@@ -22,9 +22,11 @@ class Marca(models.Model):
 
 
 class Compra(models.Model):
-    nombre = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    nombre = models.ForeignKey('Producto', on_delete=models.RESTRICT)
     fecha = models.DateTimeField(auto_now=True)
     unidades = models.IntegerField(default=1)
     importe = models.FloatField()
+
+
 
 
