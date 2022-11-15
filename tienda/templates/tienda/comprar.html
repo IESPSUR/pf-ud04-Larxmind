@@ -5,27 +5,39 @@
     <title>Title</title>
 </head>
 <body>
-    <table>
-        <tr>
-             <td>{{ producto.nombre }}</td>
-             <td>{{ producto.modelo }}</td>
-             <td>{{ producto.marca }}</td>
-        </tr>
-        <tr>
-              <td>Precio: {{ producto.precio }}</td>
-        </tr>
-        <tr>
-            <td>Unidades disponibles: {{ producto.unidades }}</td>
-        </tr>
-    </table>
 
-    <form METHOD="post">
-        {% csrf_token %}
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
 
-        <label>Cantidad</label>
-        <input name="cantidad_requerida" type="number" min="1" max="{{ producto.unidades }}">
-        <input type="submit" value="Comprar">
-    </form>
+     <div class="container col-5 text-center mt-5">
+         <table class="table">
+             <tr>
+                 <td><h4>{{ producto.nombre }}</h4></td>
+                 <td><h4>{{ producto.modelo }}</h4></td>
+                 <td><h4>{{ producto.marca }}</h4></td>
+             </tr>
+             <tr>
+                 <td colspan="3">Precio: {{ producto.precio }}</td>
+             </tr>
+             <tr>
+                <td colspan="3">Unidades disponibles: {{ producto.unidades }}</td>
+             </tr>
+             <tr>
+                 <td colspan="3">
+                     <form METHOD="post">
+                         {% csrf_token %}
+                         <label>Cantidad</label>
+                         <input name="cantidad_requerida" type="number" min="1" max="{{ producto.unidades }}">
+                         <br>
+                         <div class="btn-group">
+                             <input class="btn btn-primary" type="submit" value="Comprar">
+                            <a href={% url 'listado_compra' %} title="Cancelar_compra" type="button" class="btn btn-secondary">Cancelar </a>
+                         </div>
 
+                     </form>
+                 </td>
+             </tr>
+        </table>
+     </div>
 </body>
 </html>

@@ -63,7 +63,7 @@ class ProductoEliminar(SuccessMessageMixin, DeleteView):
     form = Producto
     fields = "__all__"
 
-    # Redireccionamos a la página principal luego de eliminar un registro o postre
+    # Redireccionamos a la página principal luego de eliminar un registro
     def get_success_url(self):
         success_message = 'Producto Eliminado Correctamente !'  # Mostramos este Mensaje luego de Editar un Producto
         messages.success(self.request, success_message)
@@ -90,12 +90,12 @@ def compra_producto(request, pk):
             cantidad_requerida = form.cleaned_data['cantidad_requerida']
 
             if cantidad_requerida > producto.unidades:
-                messages.error('Unidades del producto menor que el deseado')
+                messages.add_message(request, messages.INFO, 'Unidades disponibles menor que las pedidas.')
 
             else:
                 producto.unidades = producto.unidades - cantidad_requerida
                 producto.save()
-                messages.success(request, messages.INFO, 'Hello world.')
+                messages.add_message(request, messages.INFO, 'Producto comprado con éxito')
 
         return render(request, 'tienda/listado_compra.html', {'productos': productos})
     else:
