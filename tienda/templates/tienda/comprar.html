@@ -20,6 +20,8 @@
     </table>
 
     <form METHOD="post">
+        {% csrf_token %}
+
         <label>Cantidad</label>
         <input name="cantidad_requerida" type="number" min="1" max="{{ producto.unidades }}">
         <input type="submit" value="Comprar">

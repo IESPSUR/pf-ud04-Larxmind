@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Producto
+from .models import Producto, CheckOutForm
 
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -77,7 +77,35 @@ def listado_compra(request):
 
 
 def compra_producto(request, pk):
+    form = CheckOutForm()
     producto = get_object_or_404(Producto, pk=pk)
-    return render(request, 'tienda/comprar.html', {'producto': producto})
+    productos = Producto.objects.all()
+
+
+    if request.method == 'POST':
+        form = CheckOutForm(request.POST)
+        if form.is_valid():
+
+            # Obtención de las unidades del formulario compra_producto
+            cantidad_requerida = form.cleaned_data['cantidad_requerida']
+
+            if cantidad_requerida > producto.unidades:
+                messages.error('Unidades del producto menor que el deseado')
+
+            else:
+                producto.unidades = producto.unidades - cantidad_requerida
+                producto.save()
+                messages.success(request, messages.INFO, 'Hello world.')
+
+        return render(request, 'tienda/listado_compra.html', {'productos': productos})
+    else:
+        return render(request, 'tienda/comprar.html', {'form': form, 'producto': producto, 'pk':pk})
+
+
+
+
+
+
+
 
 

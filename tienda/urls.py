@@ -12,13 +12,13 @@ urlpatterns = [
     path('tienda/listado_productos', Listado.as_view(template_name="tienda/listado_productos.html"),
          name='listado_productos'),
 
-    # La ruta 'detalles' en donde mostraremos una página con los detalles de un postre o registro
+    # La ruta 'detalles' en donde mostraremos una página con los detalles de un registro
     path('tienda/detalle/<int:pk>', ProductoDetalle.as_view(template_name="tienda/detalles.html"), name='detalles'),
 
     # La ruta 'crear' en donde mostraremos un formulario para crear un nuevo postre o registro
     path('tienda/crear', ProductoCrear.as_view(template_name="tienda/crear.html"), name='crear'),
 
-    # La ruta 'actualizar' en donde mostraremos un formulario para actualizar un postre o registro de la Base de Datos
+    # La ruta 'actualizar' en donde mostraremos un formulario para actualizar un registro de la Base de Datos
     path('tienda/editar/<int:pk>', ProductoActualizar.as_view(template_name="tienda/actualizar.html"),
          name='actualizar'),
 

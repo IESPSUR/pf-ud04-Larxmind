@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django import forms
+
 
 # Create your models here.
 
@@ -26,6 +28,10 @@ class Compra(models.Model):
     fecha = models.DateTimeField(auto_now=True)
     unidades = models.IntegerField(default=1)
     importe = models.FloatField()
+
+
+class CheckOutForm(forms.Form):
+    cantidad_requerida = forms.IntegerField(label='cantidad_requerida')
 
 
 
