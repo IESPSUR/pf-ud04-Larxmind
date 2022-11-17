@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Producto, CheckOutForm
 
 from django.views.generic import ListView, DetailView
@@ -93,11 +93,11 @@ def compra_producto(request, pk):
                 messages.add_message(request, messages.INFO, 'Unidades disponibles menor que las pedidas.')
 
             else:
-                producto.unidades = producto.unidades - cantidad_requerida
+                producto.unidades -= cantidad_requerida
                 producto.save()
                 messages.add_message(request, messages.INFO, 'Producto comprado con éxito')
 
-        return render(request, 'tienda/listado_compra.html', {'productos': productos})
+        return redirect('view.listado_productos')
     else:
         return render(request, 'tienda/comprar.html', {'form': form, 'producto': producto, 'pk':pk})
 
