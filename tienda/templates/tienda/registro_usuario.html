@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+            {% if messages %}
+                <ul class="messages list-group mb-3">
+                    {% for message in messages %}
+                        <li {% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ formulario_registro }}
+
+        <button class="btn btn-primary" type="submit">Registrar</button>
+    </form>
+</body>
+</html>

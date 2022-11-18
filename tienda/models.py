@@ -24,11 +24,11 @@ class Marca(models.Model):
 
 
 class Compra(models.Model):
-    nombre = models.ForeignKey('Producto', on_delete=models.RESTRICT)
+    producto = models.ForeignKey('Producto', on_delete=models.RESTRICT)
     fecha = models.DateTimeField(auto_now=True)
     unidades = models.IntegerField(default=1)
     importe = models.FloatField()
-
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT)
 
 class CheckOutForm(forms.Form):
     cantidad_requerida = forms.IntegerField(label='cantidad_requerida')

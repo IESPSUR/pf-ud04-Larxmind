@@ -1,5 +1,9 @@
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Producto, CheckOutForm
+from django.utils import timezone
+
+from .models import Producto, CheckOutForm, Compra
 
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -22,7 +26,7 @@ from django import forms
 def welcome(request):
     return render(request, 'tienda/index.html', {})
 
-
+# LISTA Y EDICIÓN DE PRODUCTOS-_____________________________________________________________________
 def listado_productos(request):
     productos = Producto.objects.all()
     return render(request, 'tienda/listado_productos.html', {'productos': productos})
@@ -70,7 +74,8 @@ class ProductoEliminar(SuccessMessageMixin, DeleteView):
         return reverse('listado_productos')  # Redireccionamos a la vista principal 'listado_productos'#
 
 
-# COMPRA
+# COMPRA ____________________________________________________________________________________
+
 def listado_compra(request):
     productos = Producto.objects.all()
     return render(request, 'tienda/listado_compra.html', {'productos': productos})
@@ -85,7 +90,10 @@ def compra_producto(request, pk):
     if request.method == 'POST':
         form = CheckOutForm(request.POST)
         if form.is_valid():
-
+            if request.user.is_authenticated:
+                nombre_usuario = request.user.id
+            else:
+                nombre_usuario = None
             # Obtención de las unidades del formulario compra_producto
             cantidad_requerida = form.cleaned_data['cantidad_requerida']
 
@@ -95,17 +103,52 @@ def compra_producto(request, pk):
             else:
                 producto.unidades -= cantidad_requerida
                 producto.save()
+                Compra.objects.create(producto=producto.nombre, fecha=timezone.now(), unidades=producto.unidades,
+                                      importe=producto.precio * cantidad_requerida, usuario_id=nombre_usuario)
                 messages.add_message(request, messages.INFO, 'Producto comprado con éxito')
 
-        return redirect('view.listado_productos')
+        return redirect('listado_compra')
     else:
         return render(request, 'tienda/comprar.html', {'form': form, 'producto': producto, 'pk':pk})
 
+#CREAR USUARIOS __________________________________________________________________________________________-
+
+def registro_usuario(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            usuario = form.save()
+            login(request, usuario)
+            messages.success(request, "Registro completado")
+            return redirect('welcome')
+        messages.error(request, "Registro no completado")
+    form = UserCreationForm()
+    return render(request, 'tienda/registro_usuario.html', {'formulario_registro': form})
 
 
+def login_usuario(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password = password)
+
+            if user is not None:
+                login(request, user)
+                messages.info(request, f"Bienvenido")
+                return redirect('welcome')
+            else:
+                messages.error(request, "Error al autenticarse")
+        else:
+            messages.error(request, "Error al autenticarse")
+    form = AuthenticationForm()
+    return render(request, 'tienda/login_usuario.html', {'formulario_login': form})
 
 
-
-
+def logout_usuario(request):
+    logout(request)
+    messages.info(request, "Hasta luego")
+    return redirect('welcome')
 
 

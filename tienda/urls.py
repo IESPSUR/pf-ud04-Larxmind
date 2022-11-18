@@ -31,4 +31,14 @@ urlpatterns = [
     # Ruta para mostrar el producto de la compra
     path('tienda/comprar/<int:pk>', views.compra_producto, name='compra_producto'),
 
+    # Ruta registro usuario
+    path('tienda/registra_usuario', views.registro_usuario, name='registro_usuario'),
+
+    # Ruta Logeo de usuario
+    path('tienda/login_usuario', views.login_usuario, name='login_usuario'),
+
+    # Ruta logout de usuario
+    path('tienda/logout', views.logout_usuario, name='logout'),
+
+
 ]
