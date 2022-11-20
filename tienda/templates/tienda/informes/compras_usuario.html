@@ -1,0 +1,30 @@
+    {% extends 'tienda/base.html' %}
+
+
+    {% load bootstrap4 %}
+    {# CSS Bootstrap #}
+    {% bootstrap_css %}
+    {% block content %}
+    <div class="container col-4 text-center mt-5">
+        {% for datos in usuario %}
+            <h3>Compras del usuario {{ datos.username }}</h3>
+        {% endfor %}
+        <table class="table table-striped table-hover text">
+            {% for compra in listado_compras_usuario %}
+            <tr>
+                <th>fecha</th>
+                <th class="text-center">producto</th>
+                <th class="text-center">unidades</th>
+                <th class="text-center">importe</th>
+            </tr>
+            <tr>
+                <td>{{compra.fecha}}</td>
+                <td> <a type="button" class="btn btn-info btn-block"  href="{% url 'detalles' compra.producto_id %}"  {{compra.producto_id}}>{{compra.producto_id}}</a> </td>
+                <td class="text-center">{{compra.unidades_solicitadas}}</td>
+                <td class="text-center">{{compra.importe}}</td>
+            </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+    {% endblock %}

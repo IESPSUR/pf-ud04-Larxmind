@@ -9,7 +9,7 @@ from django import forms
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
     modelo = models.CharField(max_length=100)
-    unidades = models.IntegerField()
+    unidades_disponibles = models.IntegerField()
     precio = models.FloatField()
     detalles = models.TextField()
     marca = models.ForeignKey('Marca', on_delete=models.CASCADE)
@@ -26,7 +26,7 @@ class Marca(models.Model):
 class Compra(models.Model):
     producto = models.ForeignKey('Producto', on_delete=models.RESTRICT)
     fecha = models.DateTimeField(auto_now=True)
-    unidades = models.IntegerField(default=1)
+    unidades_solicitadas = models.IntegerField(default=1)
     importe = models.FloatField()
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT)
 

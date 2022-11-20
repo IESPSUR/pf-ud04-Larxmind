@@ -1,0 +1,14 @@
+{% extends 'tienda/base.html' %}
+
+{% load bootstrap4 %}
+{# CSS Bootstrap #}
+{% bootstrap_css %}
+
+{% block content %}
+    <ul>
+        <li><a href="{% url 'listado_por_marca' %}">Listar por marca</a> </li>
+        <li><a href="{% url 'top_ten_productos' %}">Top ten productos vendidos</a> </li>
+        <li><a href="{% url 'lista_usuarios' %}">Compras por cliente</a> </li>
+        <li><a href="{% url 'top_ten_usuarios' %}">Top ten clientes</a> </li>
+    </ul>
+{% endblock %}

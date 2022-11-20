@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.models import User
+from django.db.models import Sum, Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-
-from .models import Producto, CheckOutForm, Compra
-
+from .models import Producto, CheckOutForm, Compra, Marca
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
@@ -17,8 +17,6 @@ from django.contrib import messages
 # Habilitamos los mensajes para class-based views
 from django.contrib.messages.views import SuccessMessageMixin
 
-# Habilitamos los formularios en Django
-from django import forms
 
 # Create your views here.
 
@@ -26,10 +24,11 @@ from django import forms
 def welcome(request):
     return render(request, 'tienda/index.html', {})
 
+
 # LISTA Y EDICIÓN DE PRODUCTOS-_____________________________________________________________________
-def listado_productos(request):
-    productos = Producto.objects.all()
-    return render(request, 'tienda/listado_productos.html', {'productos': productos})
+#  def listado_productos(request):
+#    productos = Producto.objects.all()
+#    return render(request, 'tienda/listado_productos.html', {'productos': productos})
 
 
 class Listado(ListView):
@@ -77,45 +76,55 @@ class ProductoEliminar(SuccessMessageMixin, DeleteView):
 # COMPRA ____________________________________________________________________________________
 
 def listado_compra(request):
-    productos = Producto.objects.all()
-    return render(request, 'tienda/listado_compra.html', {'productos': productos})
+    peticion_buscar = request.POST.get('buscar', '') # obtención de input buscar
+    productos = Producto.objects.all()  # obtención de todos los atributos de la clase prodcuto
+
+    # en caso de recibir una petición de buscar, reasignación de valor a productos (salida)
+    if peticion_buscar:
+        productos = Producto.objects.filter(
+            Q(nombre__icontains=peticion_buscar) |
+            Q(marca__nombre__icontains=peticion_buscar) |
+            Q(modelo__icontains=peticion_buscar)
+        ).distinct()
+    return render(request, 'tienda/productos/listado_compra.html', {'productos': productos})
 
 
 def compra_producto(request, pk):
     form = CheckOutForm()
     producto = get_object_or_404(Producto, pk=pk)
-    productos = Producto.objects.all()
-
 
     if request.method == 'POST':
         form = CheckOutForm(request.POST)
         if form.is_valid():
+            # En caso de formulario válido, comprobamos si el usuario está atentificado
             if request.user.is_authenticated:
                 nombre_usuario = request.user.id
             else:
                 nombre_usuario = None
-            # Obtención de las unidades del formulario compra_producto
+            # Obtención de unidades_disponibles del formulario compra_producto
             cantidad_requerida = form.cleaned_data['cantidad_requerida']
-
-            if cantidad_requerida > producto.unidades:
+            # comprobación de unidades suficientes antes de realizar pedido
+            if cantidad_requerida > producto.unidades_disponibles:
                 messages.add_message(request, messages.INFO, 'Unidades disponibles menor que las pedidas.')
 
             else:
-                producto.unidades -= cantidad_requerida
+                producto.unidades_disponibles -= cantidad_requerida
                 producto.save()
-                Compra.objects.create(producto=producto.nombre, fecha=timezone.now(), unidades=producto.unidades,
+                Compra.objects.create(producto=producto, fecha=timezone.now(), unidades_solicitadas=cantidad_requerida,
                                       importe=producto.precio * cantidad_requerida, usuario_id=nombre_usuario)
                 messages.add_message(request, messages.INFO, 'Producto comprado con éxito')
 
         return redirect('listado_compra')
     else:
-        return render(request, 'tienda/comprar.html', {'form': form, 'producto': producto, 'pk':pk})
+        return render(request, 'tienda/productos/comprar.html', {'form': form, 'producto': producto, 'pk': pk})
 
-#CREAR USUARIOS __________________________________________________________________________________________-
 
+# CREAR USUARIOS __________________________________________________________________________________________
+
+#  método para registrar un usuario en el sistema
 def registro_usuario(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserCreationForm(request.POST)  # formulario ofrecido por django para creacion de usuarios
         if form.is_valid():
             usuario = form.save()
             login(request, usuario)
@@ -123,16 +132,17 @@ def registro_usuario(request):
             return redirect('welcome')
         messages.error(request, "Registro no completado")
     form = UserCreationForm()
-    return render(request, 'tienda/registro_usuario.html', {'formulario_registro': form})
+    return render(request, 'tienda/usuarios/registro_usuario.html', {'formulario_registro': form})
 
 
+#  método para logear un usuario en el sistema
 def login_usuario(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = AuthenticationForm(request, data=request.POST)  # formulario de autentificacion ofrecido por django
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password = password)
+            user = authenticate(username=username, password=password)
 
             if user is not None:
                 login(request, user)
@@ -143,7 +153,7 @@ def login_usuario(request):
         else:
             messages.error(request, "Error al autenticarse")
     form = AuthenticationForm()
-    return render(request, 'tienda/login_usuario.html', {'formulario_login': form})
+    return render(request, 'tienda/usuarios/login_usuario.html', {'formulario_login': form})
 
 
 def logout_usuario(request):
@@ -152,3 +162,56 @@ def logout_usuario(request):
     return redirect('welcome')
 
 
+# INFORMES _______________________________________________________________________________
+
+def informes(request):
+    return render(request, 'tienda/informes/informes.html')
+
+
+#  Método para listar Márcas dentro de la BBDD
+def listar_por_marca(request):
+    # = (Producto.objects.values('marca').order_by())
+    marcas = Marca.objects.all().values()
+    listado_por_marca = list(marcas)
+
+    return render(request, 'tienda/informes/listado_marcas.html', {'listado_por_marca': listado_por_marca})
+
+
+#  Método para listar los productos enlazados a una marca en particular dentro de la BBDD
+def listar_productos_marca(request, nombre_marca):
+    listado_productos_marca = Producto.objects.filter(marca__nombre__icontains=nombre_marca).values()
+    marca = nombre_marca
+    return render(request, 'tienda/informes/listado_productos_por_marca.html',
+                           {'listado_productos_marca': listado_productos_marca, 'marca': marca})
+
+
+# Método para listar los 10 productos más vendidos
+def top_ten_productos(request):
+    lis_top_ten_productos = Compra.objects.values('producto__nombre', 'producto__modelo').annotate(
+        total_unidades_vendidas=Sum('unidades_solicitadas')).order_by('-total_unidades_vendidas')[:10]
+    listado_top_ten_productos = list(lis_top_ten_productos)
+    return render(request, 'tienda/informes/top_ten_productos.html', {'listado_top_ten_productos':
+                                                                      listado_top_ten_productos})
+
+
+# Método para listar usuarios registrados
+def lista_usuarios(request):
+    listado_usuarios = User.objects.values('username', 'id')
+    return render(request, 'tienda/informes/lista_usuarios.html', {'listado_usuarios': listado_usuarios})
+
+
+# Método para listar compras realizadas por un usuario
+def compras_usuario(request, usuario):
+    lista_compras_usuario = Compra.objects.filter(usuario=usuario).values()
+    user = User.objects.values('username').filter(id=usuario)
+    return render(request, 'tienda/informes/compras_usuario.html', {'listado_compras_usuario': lista_compras_usuario,
+                                                                    'usuario': user})
+
+
+# Método para listar los 10 usuarios con mayores gastos
+def top_ten_usuarios(request):
+    listado_top_usuarios = User.objects.values('username').annotate(importe_total_compras=(Sum('compra__importe'))
+                                                                    ).order_by('-importe_total_compras')[:10]
+
+    return render(request, 'tienda/informes/listado_top_ten_usuarios.html', {'listado_top_ten_usuarios':
+                                                                             listado_top_usuarios})

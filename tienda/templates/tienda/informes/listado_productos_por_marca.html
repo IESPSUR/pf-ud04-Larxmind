@@ -1,0 +1,34 @@
+    {% extends 'tienda/base.html' %}
+
+
+    {% load bootstrap4 %}
+    {# CSS Bootstrap #}
+    {% bootstrap_css %}
+    {% block content %}
+ <div class="container col-10 text-center mt-5">
+    <h1 class="display-1 text-center">LISTADO DE PRODUCTOS DE LA MARCA {{marca}} </h1>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th width="35%">Nombre</th>
+      <th>Modelo</th>
+      <th>Stock</th>
+      <th>Precio</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for producto in listado_productos_marca %}
+        <tr>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.modelo }}</td>
+            <td>{{ producto.unidades_disponibles }}</td>
+            <td>{{ producto.precio }}</td>
+        </tr>
+    {% endfor %}
+  </tbody>
+</table>
+ </div>
+    {% endblock %}
+      {# JS y jQuery Bootstrap #}
+      {% bootstrap_javascript jquery='full' %}

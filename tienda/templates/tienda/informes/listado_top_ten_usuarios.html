@@ -1,0 +1,26 @@
+{% extends 'tienda/base.html' %}
+
+{% load bootstrap4 %}
+{# CSS Bootstrap #}
+{% bootstrap_css %}
+
+{% block content %}
+<div class="container col-2 text-center mt-5">
+<body>
+    <table class="table table-striped table-hover" >
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Usuario</th>
+            <th scope="col">Saldo</th>
+        </tr>
+    {% for usuario in listado_top_ten_usuarios%}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{usuario.username}}</td>
+            <td>{{usuario.importe_total_compras|floatformat:2}}</td>
+        </tr>
+    {% endfor%}
+
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+        {% for marca in listado_por_marca %}
+
+            <form method="post" action={% url 'listado_productos_marca' marca.nombre%}>
+                {% csrf_token %}
+                <button type="submit">{{ marca.nombre }}</button>
+            </form>
+
+        {% endfor %}
+{% endblock %}
