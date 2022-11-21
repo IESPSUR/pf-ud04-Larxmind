@@ -76,7 +76,7 @@ class ProductoEliminar(SuccessMessageMixin, DeleteView):
 # COMPRA ____________________________________________________________________________________
 
 def listado_compra(request):
-    peticion_buscar = request.POST.get('buscar', '') # obtención de input buscar
+    peticion_buscar = request.POST.get('buscar', '')  # obtención de input buscar
     productos = Producto.objects.all()  # obtención de todos los atributos de la clase prodcuto
 
     # en caso de recibir una petición de buscar, reasignación de valor a productos (salida)
@@ -135,10 +135,10 @@ def registro_usuario(request):
     return render(request, 'tienda/usuarios/registro_usuario.html', {'formulario_registro': form})
 
 
-#  método para logear un usuario en el sistema
+#  método para registrar un usuario en el sistema
 def login_usuario(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)  # formulario de autentificacion ofrecido por django
+        form = AuthenticationForm(request, data=request.POST)  # formulario de identification ofrecido por django
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -168,7 +168,7 @@ def informes(request):
     return render(request, 'tienda/informes/informes.html')
 
 
-#  Método para listar Márcas dentro de la BBDD
+#  Método para listar Marcas dentro de la BB DD
 def listar_por_marca(request):
     # = (Producto.objects.values('marca').order_by())
     marcas = Marca.objects.all().values()
@@ -177,7 +177,7 @@ def listar_por_marca(request):
     return render(request, 'tienda/informes/listado_marcas.html', {'listado_por_marca': listado_por_marca})
 
 
-#  Método para listar los productos enlazados a una marca en particular dentro de la BBDD
+#  Método para listar los productos enlazados a una marca en particular dentro de la BB DD
 def listar_productos_marca(request, nombre_marca):
     listado_productos_marca = Producto.objects.filter(marca__nombre__icontains=nombre_marca).values()
     marca = nombre_marca
